@@ -15,9 +15,17 @@ services:				# 실행할 모든 컨테이너를 나열하는 섹션
       - BPL_JVM_THREAD_COUNT=50		# 메모리 계산을 위한 스레드의 수를 설정하는 패키토 빌드팩 환경 변수
       - BPL_DEBUG_ENABLED=true				# 디버그 연결을 수락하기 위한 JVM 설정을 활성화(빌드팩에 의해 제공)
       - BPL_DEBUG_PORT=8001					# 디버그 연결은 8001 포트를 통해 받는다.(빌드팩에 의해 제공)
+      - SPRING_CLOUD_CONFIG_URI=http://config-service:8888
       - SPRING_DATASOURCE_URL=jdbc:postgresql://polar-postgres:5432/polardb_catalog
       - SPRING_PROFILES_ACTIVE=testdata		# 'testdata' 프로파일을 활성화
-      - SPRING_CLOUD_CONFIG_URI=http://localhost:8888
+
+  config-service:
+    image: "config-service"
+    container_name: "config-service"
+    ports:
+      - 8888:8888
+    environment:
+      - BPL_JVM_THREAD_COUNT=50
 
   polar-postgres:	# polar-postgres 컨테이터를 기술하는 섹션
     image: "postgres:14.4"
@@ -28,12 +36,3 @@ services:				# 실행할 모든 컨테이너를 나열하는 섹션
       - POSTGRES_USER=user
       - POSTGRES_PASSWORD=password
       - POSTGRES_DB=polardb_catalog
- 
-  config-service:
-    image: "config-service"
-    container_name: "config-service"
-    ports:
-      - 8888:8888
-    environment:
-      - BPL_JVM_THREAD_COUNT=50
-      - SPRING_CLOUD_CONFIG_SERVER_GIT_URI=https://github.com/HwaJin35/config-repo
