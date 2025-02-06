@@ -1,6 +1,5 @@
 ############ 카탈로그 서비스를 설명하는 도커 컴포즈 파일(docker-compose.yml) ############
-
-# version: "3.8" -> 도커 컴포즈 구문 버전(docker compose V2 에서는 사용하지 않음)
+version: "3.8"
 services:				# 실행할 모든 컨테이너를 나열하는 섹션
   
   catalog-service:		# catalog-service 컨테이너를 기술하는 섹션
@@ -32,7 +31,9 @@ services:				# 실행할 모든 컨테이너를 나열하는 섹션
     container_name: "polar-postgres"
     ports:
       - 5432:5432
-    environment:
+    environment:			# POSTGRES_DB 환경 변수에 삭제 -> 초기화 SQL 스크립트 컨테이너에 볼륨으로 마운트한다.
       - POSTGRES_USER=user
       - POSTGRES_PASSWORD=password
-      - POSTGRES_DB=polardb_catalog
+#      - POSTGRES_DB=polardb_catalog
+    volumes:
+      - ./postgresql/init.sql:/docker-entrypoint-initdb.d/init.sql			# 초기화 SQL 스크립트를 컨에티너에 볼륨으로 마운트.
